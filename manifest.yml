@@ -1,0 +1,4 @@
+---
+applications:
+- name: azure-storge-consumer
+  memory: 512M
