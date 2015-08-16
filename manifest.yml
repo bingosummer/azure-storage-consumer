@@ -1,4 +1,4 @@
 ---
 applications:
-- name: azure-storge-consumer
+- name: azure-storage-consumer
   memory: 512M
