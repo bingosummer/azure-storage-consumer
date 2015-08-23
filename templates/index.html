@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+   <div class="container">
+    <div class="header">
+     <h3 class="text-muted">Uploading a file to Azure Storage</h3>
+    </div>
+    <hr/>
+    <div>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+       <input type="file" name="file">
+       <br /><br />
+       <input type="submit" value="Upload">
+      </form>
+      <br /><br />
+      <form action="/download" method="get">
+       <input type="text" name="filename">
+       <input type="submit" value="Download">
+      </form>
+    </div>
+    <p> {{ msg }} </p>
+   </div>
+  </body>
+</html>
