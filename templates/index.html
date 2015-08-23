@@ -15,7 +15,15 @@
        <br /><br />
        <input type="submit" value="Upload">
       </form>
-      <br /><br />
+    </div>
+    <br /><br />
+    <p> Uploaded files: </p>
+    <ul>
+    {% for filename in filenames %}
+      <li>{{ filename }}</li>
+    {% endfor %}
+    </ul>
+     <div>
       <form action="/download" method="get">
        <input type="text" name="filename">
        <input type="submit" value="Download">

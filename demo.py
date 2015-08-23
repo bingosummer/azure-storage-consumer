@@ -3,7 +3,7 @@ import json
 from cStringIO import StringIO
 from flask import Flask, request, render_template, redirect, url_for, make_response
 from azure.storage import BlobService
-from azure import WindowsAzureMissingResourceError
+from azure import WindowsAzureError, WindowsAzureMissingResourceError
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -19,20 +19,30 @@ blob_service = BlobService(account_name, account_key)
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    blobs = blob_service.list_blobs(container_name)
+    return render_template("index.html", filenames=[blob.name for blob in blobs])
 
 @app.route('/upload', methods= ['POST'])
 def upload():
     file = request.files['file']
-    app.logger.info('uploading file ' + file.filename)
-    blob_service.put_block_blob_from_file(
-        container_name,
-        file.filename,
-        file,
-        max_connections=5
-    )
-    msg = '{0} is uploaded'.format(file.filename)
-    return render_template("index.html", msg=msg)
+    if not file or not file.filename:
+        msg = 'The file to upload is invalid'
+        blobs = blob_service.list_blobs(container_name)
+        return render_template("index.html", msg=msg, filenames=[blob.name for blob in blobs])
+    try:
+        app.logger.info('uploading file {0}'.format(file.filename))
+        blob_service.put_block_blob_from_file(
+            container_name,
+            file.filename,
+            file,
+            max_connections=5
+        )
+        msg = '{0} is uploaded'.format(file.filename)
+    except WindowsAzureError as e:
+        msg = 'WindowsAzureError: {0}'.format(e.message)
+        app.logger.debug(msg)
+    blobs = blob_service.list_blobs(container_name)
+    return render_template("index.html", msg=msg, filenames=[blob.name for blob in blobs])
 
 @app.route('/download', methods= ['GET'])
 def download():
@@ -49,7 +59,8 @@ def download():
     except WindowsAzureMissingResourceError as e:
         msg = '{0} not found'.format(filename)
         app.logger.debug(msg)
-        return render_template("index.html", msg=msg)
+        blobs = blob_service.list_blobs(container_name)
+        return render_template("index.html", msg=msg, filenames=[blob.name for blob in blobs])
     contents = stream.getvalue()
     response = make_response(contents)
     response.headers["Content-Type"] = "application/octet-stream"
