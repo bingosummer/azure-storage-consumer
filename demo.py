@@ -13,7 +13,7 @@ app = Flask(__name__)
 service_name = 'azurestorage'
 vcap_services = json.loads(os.environ['VCAP_SERVICES'])
 account_name = vcap_services[service_name][0]['credentials']['storage_account_name']
-account_key = vcap_services[service_name][0]['credentials']['storage_account_key']
+account_key = vcap_services[service_name][0]['credentials']['primary_access_key']
 container_name = vcap_services[service_name][0]['credentials']['container_name']
 blob_service = BlobService(account_name, account_key)
 
