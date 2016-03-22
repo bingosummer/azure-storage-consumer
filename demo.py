@@ -10,7 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 
-service_name = 'azurestorage'
+service_name = 'azurestorageblob'
 vcap_services = json.loads(os.environ['VCAP_SERVICES'])
 account_name = vcap_services[service_name][0]['credentials']['storage_account_name']
 account_key = vcap_services[service_name][0]['credentials']['primary_access_key']
