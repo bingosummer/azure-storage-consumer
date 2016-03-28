@@ -68,7 +68,7 @@ def download():
     return response
 
 
-port = os.getenv('VCAP_APP_PORT', '5000')
+port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
     handler = RotatingFileHandler('demo.log', maxBytes=10000, backupCount=1)
     handler.setLevel(logging.INFO)
