@@ -2,3 +2,4 @@
 applications:
 - name: azure-storage-consumer
   memory: 512M
+  buildpack: https://github.com/cloudfoundry/python-buildpack.git
