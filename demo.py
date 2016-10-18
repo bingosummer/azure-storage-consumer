@@ -1,5 +1,6 @@
 import os
 import json
+import uuid
 from cStringIO import StringIO
 from flask import Flask, request, render_template, redirect, url_for, make_response
 from azure.storage import BlobService
@@ -10,12 +11,14 @@ from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 
-service_name = 'azure-storageblob'
+service_name = 'azure-storage'
 vcap_services = json.loads(os.environ['VCAP_SERVICES'])
 account_name = vcap_services[service_name][0]['credentials']['storage_account_name']
 account_key = vcap_services[service_name][0]['credentials']['primary_access_key']
-container_name = vcap_services[service_name][0]['credentials']['container_name']
 blob_service = BlobService(account_name, account_key)
+
+container_name = '{0}{1}'.format('cloud-foundry-', str(uuid.uuid4()).replace('-', ''))
+blob_service.create_container(container_name)
 
 @app.route('/')
 def index():
